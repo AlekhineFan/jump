@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let isGoingLeft = false;
   let leftTimerId;
   let rightTimerId;
+  let score = 0;
 
   function createJumper() {
     grid.appendChild(jumper);
@@ -88,7 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function gameover() {
     console.log("game over");
     isGameover = true;
+
+    while (grid.firstChild) {
+      grid.removeChild(grid.firstChild);
+    }
+    grid.innerHTML = score;
     clearInterval(downTimerId);
+    clearInterval(upTimerId);
+    clearInterval(leftTimerId);
+    clearInterval(rightTimerId);
   }
 
   function movePlatforms() {
@@ -97,39 +106,52 @@ document.addEventListener("DOMContentLoaded", () => {
         plat.bottom -= 2;
         let visual = plat.visual;
         visual.style.bottom = plat.bottom + "px";
+
+        if (plat.bottom < 10) {
+          let firstPlat = platforms[0].visual;
+          firstPlat.classList.remove("platform");
+          platforms.shift();
+          let newPlat = new Platform(600);
+          platforms.push(newPlat);
+          score++;
+        }
       });
     }
   }
 
   function moveLeft() {
-    isGoingLeft = true;
     if (isGoingRight) {
       clearInterval(rightTimerId);
       isGoingRight = false;
     }
+    isGoingLeft = true;
     leftTimerId = setInterval(() => {
-      jumperLeft -= 5;
-      jumper.style.left = jumperLeft + "px";
-    }, 30);
+      if (jumperLeft >= 0) {
+        jumperLeft -= 2;
+        jumper.style.left = jumperLeft + "px";
+      } else {
+        moveRight();
+      }
+    }, 10);
   }
 
   function moveRight() {
-    isGoingRight = true;
     if (isGoingLeft) {
       clearInterval(leftTimerId);
       isGoingLeft = false;
     }
+    isGoingRight = true;
     rightTimerId = setInterval(() => {
       if (jumperLeft <= 340) {
-        jumperLeft += 5;
+        jumperLeft += 2;
         jumper.style.left = jumperLeft + "px";
       } else {
         moveLeft();
       }
-    }, 30);
+    }, 10);
   }
 
-  function movStraight() {
+  function moveStraight() {
     isGoingLeft = false;
     isGoingRight = false;
     clearInterval(leftTimerId);
@@ -141,6 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
       moveLeft();
     } else if (e.key === "ArrowRight") {
       moveRight();
+    } else if (e.key === "ArrowUp") {
+      moveStraight();
     }
   }
 
