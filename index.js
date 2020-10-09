@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const messages = [
       "Don't underestimate the Force.",
       "I find your lack of faith disturbing.",
-      "The force is trong with this one.",
+      "The force is strong with this one.",
       "I felt a great disturbance in the Force.",
       "Do. Or do not. There is no try.",
       "Train yourself to let go of everything you fear to lose.",
