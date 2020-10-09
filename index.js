@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector(".grid");
-  const jumper = document.createElement("div");
+  const jumper = document.createElement("img");
+
   let jumperLeft = 50;
   let startingPoint = 150;
   let jumperBottom = startingPoint;
@@ -16,13 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let rightTimerId;
   let score = 0;
 
-  function createJumper() {
+  const createJumper = () => {
+    jumper.setAttribute("src", "./images/yoda.png");
     grid.appendChild(jumper);
     jumper.classList.add("jumper");
     jumperLeft = platforms[0].left;
     jumper.style.left = jumperLeft + "px";
     jumper.style.bottom = jumperBottom + "px";
-  }
+  };
 
   class Platform {
     constructor(newBottom) {
@@ -39,17 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function createPlatform() {
+  const createPlatform = () => {
     for (let i = 0; i < platformCount; i++) {
       let platformGap = 600 / platformCount;
       let newPlatBottom = 100 + i * platformGap;
       let platform = new Platform(newPlatBottom);
       platforms.push(platform);
-      console.log(platforms);
     }
-  }
+  };
 
-  function jump() {
+  const jump = () => {
     clearInterval(downTimerId);
     isJumping = true;
     upTimerId = setInterval(function () {
@@ -59,9 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fall();
       }
     }, 30);
-  }
+  };
 
-  function fall() {
+  const fall = () => {
     clearInterval(upTimerId);
     isJumping = false;
     downTimerId = setInterval(function () {
@@ -78,29 +79,57 @@ document.addEventListener("DOMContentLoaded", () => {
           jumperBottom <= plat.left + 85 &&
           !isJumping
         ) {
-          console.log("landed");
           startingPoint = jumperBottom;
           jump();
         }
       });
     }, 30);
-  }
+  };
 
-  function gameover() {
-    console.log("game over");
+  const getRandomMessage = () => {
+    const messages = [
+      "Don't underestimate the Force.",
+      "I find your lack of faith disturbing.",
+      "The force is trong with this one.",
+      "I felt a great disturbance in the Force.",
+      "Do. Or do not. There is no try.",
+      "Train yourself to let go of everything you fear to lose.",
+      "The Force will be with you always.",
+      "Use the Force, Luke.",
+      "I can feel you anger. It gives you focus. It makes you stronger.",
+      "In a dark place we find ourselves, and a little more knowledge lights our way.",
+      "Fear is the path to the dark side.",
+      "Join me, and together we can rule the galaxy.",
+      "You can’t win, Darth. Strike me down, and I will become more powerful.",
+    ];
+
+    return messages[Math.floor(Math.random() * messages.length)];
+  };
+
+  const gameover = () => {
     isGameover = true;
 
     while (grid.firstChild) {
       grid.removeChild(grid.firstChild);
     }
-    grid.innerHTML = score;
+
+    const message = document.createElement("p");
+    message.classList.add("message");
+    message.innerText = `${getRandomMessage()} Score: ${score}`;
+    grid.append(message);
+
+    const playBtn = document.createElement("a");
+    playBtn.href = "javascript:location.reload(true)";
+    playBtn.innerHTML = `<button id="play-again">Play again</button>`;
+    grid.append(playBtn);
+
     clearInterval(downTimerId);
     clearInterval(upTimerId);
     clearInterval(leftTimerId);
     clearInterval(rightTimerId);
-  }
+  };
 
-  function movePlatforms() {
+  const movePlatforms = () => {
     if (jumperBottom > 200) {
       platforms.forEach((plat) => {
         plat.bottom -= 2;
@@ -117,9 +146,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-  }
+  };
 
-  function moveLeft() {
+  const moveLeft = () => {
     if (isGoingRight) {
       clearInterval(rightTimerId);
       isGoingRight = false;
@@ -133,9 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
         moveRight();
       }
     }, 10);
-  }
+  };
 
-  function moveRight() {
+  const moveRight = () => {
     if (isGoingLeft) {
       clearInterval(leftTimerId);
       isGoingLeft = false;
@@ -149,16 +178,16 @@ document.addEventListener("DOMContentLoaded", () => {
         moveLeft();
       }
     }, 10);
-  }
+  };
 
-  function moveStraight() {
+  const moveStraight = () => {
     isGoingLeft = false;
     isGoingRight = false;
     clearInterval(leftTimerId);
     clearInterval(rightTimerId);
-  }
+  };
 
-  function control(e) {
+  const control = (e) => {
     if (e.key === "ArrowLeft") {
       moveLeft();
     } else if (e.key === "ArrowRight") {
@@ -166,9 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (e.key === "ArrowUp") {
       moveStraight();
     }
-  }
+  };
 
-  function start() {
+  const start = () => {
     if (!isGameover) {
       createPlatform();
       createJumper();
@@ -176,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
       jump();
       document.addEventListener("keyup", control);
     }
-  }
+  };
 
   start();
 });
