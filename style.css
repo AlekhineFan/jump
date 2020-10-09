@@ -1,22 +1,40 @@
 .grid {
   width: 400px;
   height: 600px;
-  background-color: yellow;
+  background-image: url("./images/vader.jpg");
+  background-position: center;
   position: relative;
   font-size: 200px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 70px;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .jumper {
   width: 60px;
   height: 85px;
-  background-color: red;
   position: absolute;
 }
 
 .platform {
   width: 85px;
-  height: 15px;
-  background-color: green;
+  height: 35px;
+  background-image: url("./images/saber.png");
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+}
+
+.message {
+  margin-top: 100px;
+  font-size: 60px;
+  color: rgb(80, 252, 89);
+}
+
+#play-again {
   position: absolute;
 }
